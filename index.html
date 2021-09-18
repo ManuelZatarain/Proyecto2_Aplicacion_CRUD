@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto 2 Desarrollo de CRUD</title>
+ </head>
+<body>
+ 
+<form class="formulario">
+    <h1>Listado de Tareas</h1>
+    <div>
+        <label>Nombrar Tarea</label><input type="text" name="nombre">
+    </div>
+    <div>
+        <label>Cantidad</label><input type="number" name="nota" min="0" max="10">
+    </div>
+    <div>
+        <br><input type="submit" value="Agregar" class="agregar">
+    </div>
+</form>
+ 
+<table id="listado" class='hide'>
+    <thead>
+        <th>Tarea</th>
+        <th>Cantidad</th>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+  
+</body>
+</html>
+ 
+  
+
+<script>
+document.querySelector("input[class=agregar]").addEventListener("click",function(e){
+    e.preventDefault();
+ 
+    var nombre=document.querySelector("input[name=nombre]");
+    var nota=document.querySelector("input[name=nota]");
+ 
+    // mostramos un error si no ha recibido alguna tarea
+    if(!nombre.value)
+    {
+        nombre.classList.add("error");
+        return;
+    }
+    nombre.classList.remove("error");
+ 
+    // mostramos un error si no ha recibido una nota
+    if(isNaN(parseInt(nota.value)) || (parseInt(nota.value)<0 && parseInt(nota.value)>10))
+    {
+        nota.classList.add("error");
+        return;
+    }
+    nota.classList.remove("error");
+ 
+    // añadimos la actividad a la base de datos
+    var tr=document.createElement("tr");
+ 
+    var tdNombre=document.createElement("td");
+    var txt=document.createTextNode(nombre.value);
+    tdNombre.appendChild(txt);
+    tdNombre.className="nombre";
+ 
+    var tdNota=document.createElement("td");
+    txt=document.createTextNode(nota.value);
+    tdNota.appendChild(txt);
+    tdNota.className="right";
+ 
+    var tdRemove=document.createElement("td");
+    var buttonRemove=document.createElement("input")
+    buttonRemove.type="button";
+    buttonRemove.value="Eliminar";
+    buttonRemove.onclick=function () {
+        // elimina la columna
+        this.parentElement.parentElement.remove();
+ 
+        // Si no hay ninguna actividad, escondemos la tabla
+        if(document.getElementById("listado").querySelector("tbody").querySelectorAll("tr").length==0)
+        {
+            document.getElementById("listado").classList.add("hide");
+            document.getElementById("calculos").classList.add("hide");
+        }
+        calculos();
+    };
+    tdRemove.appendChild(buttonRemove);
+ 
+    tr.appendChild(tdNombre);
+    tr.appendChild(tdNota);
+    tr.appendChild(tdRemove);
+ 
+    var tbody=document.getElementById("listado").querySelector("tbody").appendChild(tr);
+ 
+    // eliminamos la clase que tiene oculta la tabla cuando no hay ninguna actividad
+    document.getElementById("listado").classList.remove("hide");
+    document.getElementById("calculos").classList.remove("hide");
+ 
+    //limpiamos los valores del input
+    nota.value="";
+    nombre.value="";
+    nombre.focus();
+ 
+ });
+ 
+</script>
+
+
+
+<style>
+    * {box-sizing: border-box;font-family:Arial;}
+    .hide {display:none;}
+    .right {text-align:right;}
+    .error {border:1px solid Red;}
+ 
+    .nombre {width:100%}
+    .formulario {text-align:center;width:400px;border:1px solid #eee;padding:10px;}
+    .formulario label,.formulario label~input {
+        width: 50%;
+        display: inline-block;
+        float:left;
+    }
+    .formulario label {text-align:right;padding-right:20px;}
+    .formulario>div {margin-top:10px;overflow:hidden;}
+    .agregar {
+        background-color:green;
+        border-color:green;
+        color:white;
+    }
+ 
+    #listado {
+        border:1px solid #eee;
+        margin-top:20px;
+        width:400px;
+    }
+    #listado th {background-color:#eee;padding:5px 10px;}
+  
+    #listado input[type=button] {
+        background-color:Red;
+        border-color:Red;
+        color:white;
+    }
+ 
+    </style>
